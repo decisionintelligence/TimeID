@@ -1,0 +1,66 @@
+export CUDA_VISIBLE_DEVICES=2
+
+if [ ! -d "./logs" ]; then
+    mkdir ./logs
+fi
+
+if [ ! -d "./logs/LongForecasting" ]; then
+    mkdir ./logs/LongForecasting
+fi
+seq_len=336
+
+root_path_name=./dataset/
+source_root_path_name=./dataset/
+data_path_name=traffic.csv
+source_data_path_name=ETTh1.csv
+model_id_name=traffic
+data_name=custom
+source_data_name=ETTh1
+
+
+for pred_len in 336 #192 336
+do
+    nohup python -u main.py \
+      --percent 30 \
+      --emb_dim 862 \
+      --lr 1e-4 \
+      --max_epochs 100 \
+      --save_every 10000 \
+      --wd 5.0e-03 \
+      --drop 0.3 \
+      --dropout_rate 0.1 \
+      --res_epoch 20 \
+      --root_path $root_path_name \
+      --source_root_path $source_root_path_name \
+      --data_path $data_path_name \
+      --source_data_path $source_data_path_name \
+      --data $data_name \
+      --source_data $source_data_name \
+      --data_name $model_id_name \
+      --source_data_name $source_data_name \
+      --features M \
+      --seq_len $seq_len \
+      --source_seq_len $seq_len \
+      --pred_len $pred_len \
+      --source_pred_len $pred_len \
+      --enc_in 862 \
+      --dec_in 862 \
+      --c_out 862 \
+      --e_layers 3 \
+      --n_heads 16 \
+      --d_model 128 \
+      --d_model_FPT 768 \
+      --d_ff 256 \
+      --dropout 0.2\
+      --fc_dropout 0.2\
+      --head_dropout 0\
+      --patch_len 16\
+      --stride 8\
+      --gpt_layer 6 \
+      --is_gpt 1 \
+      --des 'Exp' \
+      --TTA_STEPS 1 \
+      --IIC_PAR 1e-3 \
+      --source_batch_size 2 \
+      --batch_size 2 >logs/LongForecasting/$source_data_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 2>&1 &
+done
