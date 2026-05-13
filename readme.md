@@ -1,4 +1,4 @@
-# Disentangling Invariant Features for Source-Free Time Series Forecasting with LLM-Centric Proxy Denoising
+# Invariant Representation Learning for Source-Free Time Series Forecasting with LLM-Centric Proxy Denoising
 
 ## Running
 
